@@ -205,38 +205,45 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 		//// Write your code here
-		if (node == null) {
+		if (node.block == null) {
 			throw new IllegalArgumentException(
 					"node cant be null");
 		}
-		else if (node == first) {
-			first = first.next;
-			if (first == null) {
+		else if(first == null){
+			return;
+		}
+
+		else if (first.equals(node)) {
+			if(size == 1){
+				first = null;
 				last = null;
-				size--;
+			if (first == null) {
+				first = first.next;
 			}
+			size--;
+			return;
 		}
 		else
 		{
 			Node current = this.first;
-		Node prev = null;
+			Node prev = null;
 
-		while (current != null) {
-			if(current.equals(node)) {
-				if(current.next == null){ //if we want to remove the last element
-					this.last = prev;
-					this.last.next = null;
-				} else{
-					prev.next = current.next;
+			while (current != null) {
+				if(current.equals(node)) {
+					if(current.next == null){ //if we want to remove the last element
+						this.last = prev;
+						this.last.next = null;
+					} else{
+						prev.next = current.next;
+					}
+					size--;
+					return;
 				}
-				size--;
-				return;
-			}
-
 			prev = current;
 			current = current.next;
+			}
 		}
-		}
+	}
 	}
 
 	/**
@@ -248,11 +255,6 @@ public class LinkedList {
 	 */
 	public void remove(int index) {
 		//// Write your code here
-		if (index < 0 || index > size) {
-			throw new IllegalArgumentException(
-					"index must be between 0 and size");
-		}
-		
 		remove(getNode(index));
 	}
 
@@ -264,16 +266,8 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		
-		//// Write your code here
-		if (indexOf(block) == -1) {
-			throw new IllegalArgumentException(
-					"the given memory block is not in the list");
-		}
-		else
-		{
-			remove(indexOf(block));
-		}
+		int index = indexOf(block);
+		remove(getNode(index));
 	}	
 
 	/**
