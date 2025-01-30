@@ -120,17 +120,15 @@ public class LinkedList {
 	 */
 	public void addLast(MemoryBlock block) {
 		//// Write your code here
-		Node newNode = new Node(block);
-		if (size == 0) {
-			last = newNode;
-			first = newNode;
-			size++;
+		Node node = new Node(block);
+		if(first == null){
+			first = node;
+			last = node;
+		} else{
+			last.next = node;
+			last = node;
 		}
-		else {
-			last.next = newNode;
-		last = newNode;
-		size++; 
-		}
+		this.size++;
 		
 	}
 	
