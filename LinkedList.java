@@ -168,6 +168,10 @@ public class LinkedList {
 	 */
 	public MemoryBlock getBlock(int index) {
 		//// Replace the following statement with your code
+		 if (index < 0 || index > size) {
+			throw new IllegalArgumentException(
+				"index must be between 0 and size");
+	}
 		return getNode(index).block;
 	}	
 

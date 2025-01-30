@@ -97,16 +97,24 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 		//// Write your code here
-		Node current = allocatedList.getFirst();
-		while (current != null) {
-			if (current.block.baseAddress == address) {
-				freeList.addLast(current.block);
-				allocatedList.remove(current.block);
-				
-			}
+		if (allocatedList.getSize() == 0) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
 		}
-
+		ListIterator list = allocatedList.iterator();
+		Node current = allocatedList.getFirst();
+		while (list.hasNext()) {
+			if (current.block.baseAddress == address) {
+				allocatedList.remove(current.block);
+				freeList.addLast(current.block);				
+				return;
+			}
+			list.next();
+		}
+			
 	}
+
+	
 	
 	/**
 	 * A textual representation of the free list and the allocated list of this memory space, 
