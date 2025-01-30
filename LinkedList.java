@@ -85,27 +85,29 @@ public class LinkedList {
 	 */
 	public void add(int index, MemoryBlock block) {
 		//// Write your code here
+		if (index < 0 || index > size) {
+			throw new IllegalArgumentException(
+					"index must be between 0 and size");
+		}
 		Node newNode = new Node(block);
 		if (index == 0) {
-			newNode.next = first;
-			first = newNode;
-			size++;
+			addFirst(block);
+			return;
 		}
 		else if (index == size) {
-			last.next = newNode;
-			last = newNode;
-			size++;
+			addLast(block);
+			return;
 		}
 		else {
 			Node current = first;
-			int i = 0;
-			while (i < index) {
-			current = current.next;
-			i++;
+			Node prev = null;
+			for(int i = 0; i < index; i++){
+				prev = current;
+				current = current.next;
 			}
-		newNode.next = current;
-		current = newNode;
-		size++;
+			prev.next = newNode;
+			newNode.next = current;
+			this.size++;
 		}
 		
 
