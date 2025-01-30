@@ -60,6 +60,8 @@ public class MemorySpace {
 	public int malloc(int length) {		
 		//// Replace the following statement with your code
 		ListIterator list = freeList.iterator();
+		while (list.hasNext())
+	{
 		Node current = freeList.getFirst();
 		while (current != null) {
 			if (current.block.length < length) {
@@ -78,7 +80,10 @@ public class MemorySpace {
 				}
 				return newBlock.baseAddress;
 			}
-		}
+		}	
+		list.next();
+
+	}
 		return -1;
 	}
 
