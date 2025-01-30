@@ -205,41 +205,32 @@ public class LinkedList {
 	 */
 	public void remove(Node node) {
 		//// Write your code here
-		if (node.block == null) {
-			throw new IllegalArgumentException(
-					"node cant be null");
+		if (node == null) {
+			throw new NullPointerException("NullPointerException!");
 		}
-		else if(first == null){
+		if (size == 0) {
 			return;
 		}
-		else if (node == first) {
+		if (node == first) { // Remove first node
 			first = first.next;
 			if (first == null) {
-				last = null;
-				size--;
+				last = null; // List is now empty
 			}
-		}
-		else
-		{
-			Node current = this.first;
-		Node prev = null;
-
-		while (current != null) {
-			if(current.equals(node)) {
-				if(current.next == null){ //if we want to remove the last element
-					this.last = prev;
-					this.last.next = null;
-				} else{
-					prev.next = current.next;
+		} else {
+			Node previous = null;
+			Node current = first;
+			while (current != null && current != node) {
+				previous = current;
+				current = current.next;
+			}
+			if (current == node) {
+				previous.next = current.next;
+				if (current == last) {
+					last = previous; // Update last if the last node was removed
 				}
-				size--;
-				return;
 			}
-
-			prev = current;
-			current = current.next;
 		}
-		}
+		size--;
 	}
 
 	/**
@@ -251,7 +242,8 @@ public class LinkedList {
 	 */
 	public void remove(int index) {
 		//// Write your code here
-		remove(getNode(index));
+		Node node = getNode(index);
+        remove(node);
 	}
 
 	/**
