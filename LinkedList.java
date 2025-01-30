@@ -212,38 +212,34 @@ public class LinkedList {
 		else if(first == null){
 			return;
 		}
-
-		else if (first.equals(node)) {
-			if(size == 1){
-				first = null;
-				last = null;
+		else if (node == first) {
+			first = first.next;
 			if (first == null) {
-				first = first.next;
+				last = null;
+				size--;
 			}
-			size--;
-			return;
 		}
 		else
 		{
 			Node current = this.first;
-			Node prev = null;
+		Node prev = null;
 
-			while (current != null) {
-				if(current.equals(node)) {
-					if(current.next == null){ //if we want to remove the last element
-						this.last = prev;
-						this.last.next = null;
-					} else{
-						prev.next = current.next;
-					}
-					size--;
-					return;
+		while (current != null) {
+			if(current.equals(node)) {
+				if(current.next == null){ //if we want to remove the last element
+					this.last = prev;
+					this.last.next = null;
+				} else{
+					prev.next = current.next;
 				}
+				size--;
+				return;
+			}
+
 			prev = current;
 			current = current.next;
-			}
 		}
-	}
+		}
 	}
 
 	/**
