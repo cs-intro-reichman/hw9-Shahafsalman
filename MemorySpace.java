@@ -59,6 +59,26 @@ public class MemorySpace {
 	 */
 	public int malloc(int length) {		
 		//// Replace the following statement with your code
+		ListIterator list = freeList.iterator();
+		Node current = freeList.getFirst();
+		while (current != null) {
+			if (current.block.length < length) {
+				current = current.next;
+			}
+			else {
+				MemoryBlock newBlock = new MemoryBlock(current.block.baseAddress, length);
+				allocatedList.addLast(newBlock);
+				if (length == current.block.length) {
+					freeList.remove(current);
+				}
+				else
+				{
+					current.block.length -= length;
+					current.block.baseAddress += length;
+				}
+				return newBlock.baseAddress;
+			}
+		}
 		return -1;
 	}
 
@@ -72,6 +92,15 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 		//// Write your code here
+		Node current = allocatedList.getFirst();
+		while (current != null) {
+			if (current.block.baseAddress == address) {
+				freeList.addLast(current.block);
+				allocatedList.remove(current.block);
+				
+			}
+		}
+
 	}
 	
 	/**
@@ -89,5 +118,38 @@ public class MemorySpace {
 	 */
 	public void defrag() {
 		//// Write your code here
+		if (freeList.getSize() <= 1)
+			return;
+	
+		Node current = freeList.getFirst();
+		while (current != null) {
+			Node following = current.next;
+			boolean merged = false;
+	
+			while (following != null) {
+				MemoryBlock currentBlock = current.block;
+				MemoryBlock nextBlock = following.block;
+	
+
+				if (currentBlock.baseAddress + currentBlock.length == nextBlock.baseAddress) {
+					currentBlock.length += nextBlock.length;
+					freeList.remove(following);
+					merged = true; 
+					following = current.next; 
+				} else if (nextBlock.baseAddress + nextBlock.length == currentBlock.baseAddress) {
+					nextBlock.length += currentBlock.length; 
+					nextBlock.baseAddress = currentBlock.baseAddress;
+					freeList.remove(current); 
+					merged = true; 
+					current = freeList.getFirst(); 
+					break;  
+				} else {
+					following = following.next; 
+				}
+			}
+			if (!merged) {
+				current = current.next;
+			}
+		}
 	}
 }
