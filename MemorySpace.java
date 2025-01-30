@@ -61,31 +61,29 @@ public class MemorySpace {
 		//// Replace the following statement with your code
 		ListIterator list = freeList.iterator();
 		while (list.hasNext())
-	{
-		Node current = freeList.getFirst();
-		while (current != null) {
-			if (current.block.length < length) {
-				current = current.next;
-			}
-			else {
-				MemoryBlock newBlock = new MemoryBlock(current.block.baseAddress, length);
-				allocatedList.addLast(newBlock);
-				if (length == current.block.length) {
-					freeList.remove(current);
+		{
+			if (list.current.block.length >= length) {
+				MemoryBlock newBlock = new MemoryBlock(list.current.block.baseAddress, length);
+				if (list.current.block.length == length) {
+					freeList.remove(list.current.block);
 				}
 				else
 				{
-					current.block.length -= length;
-					current.block.baseAddress += length;
+					list.current.block.length -= length;
+					list.current.block.baseAddress += length;
 				}
-				return newBlock.baseAddress;
+				allocatedList.addLast(newBlock);
+				return allocatedList.getLast().block.baseAddress;
 			}
-		}	
-		list.next();
-
-	}
+			list.next();
+		}
 		return -1;
 	}
+
+
+		
+
+
 
 	/**
 	 * Frees the memory block whose base address equals the given address.
@@ -102,11 +100,10 @@ public class MemorySpace {
 					"index must be between 0 and size");
 		}
 		ListIterator list = allocatedList.iterator();
-		Node current = allocatedList.getFirst();
 		while (list.hasNext()) {
-			if (current.block.baseAddress == address) {
-				allocatedList.remove(current.block);
-				freeList.addLast(current.block);				
+			if (list.current.block.baseAddress == address) {
+				allocatedList.remove(list.current.block);
+				freeList.addLast(list.current.block);				
 				return;
 			}
 			list.next();
@@ -131,38 +128,25 @@ public class MemorySpace {
 	 */
 	public void defrag() {
 		//// Write your code here
-		if (freeList.getSize() <= 1)
-			return;
-	
-		Node current = freeList.getFirst();
-		while (current != null) {
-			Node following = current.next;
-			boolean merged = false;
-	
-			while (following != null) {
-				MemoryBlock currentBlock = current.block;
-				MemoryBlock nextBlock = following.block;
-	
+		ListIterator itr1 = freeList.iterator();
+		ListIterator itr2 = freeList.iterator();
 
-				if (currentBlock.baseAddress + currentBlock.length == nextBlock.baseAddress) {
-					currentBlock.length += nextBlock.length;
-					freeList.remove(following);
-					merged = true; 
-					following = current.next; 
-				} else if (nextBlock.baseAddress + nextBlock.length == currentBlock.baseAddress) {
-					nextBlock.length += currentBlock.length; 
-					nextBlock.baseAddress = currentBlock.baseAddress;
-					freeList.remove(current); 
-					merged = true; 
-					current = freeList.getFirst(); 
-					break;  
-				} else {
-					following = following.next; 
+		while(itr1.hasNext()){
+			while(itr2.hasNext()){
+				int baseAddress = itr1.current.block.baseAddress;
+				int len = itr1.current.block.length;
+
+				if(len + baseAddress == itr2.current.block.baseAddress){
+					itr1.current.block.length += itr2.current.block.length;
+					freeList.remove(itr2.current.block);
+					itr2 = freeList.iterator();
 				}
+
+				itr2.next();
 			}
-			if (!merged) {
-				current = current.next;
-			}
+			itr2 = freeList.iterator();
+			itr1.next();
 		}
+
 	}
 }

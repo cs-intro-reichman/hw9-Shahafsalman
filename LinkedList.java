@@ -215,18 +215,24 @@ public class LinkedList {
 		}
 		else
 		{
-			Node current = first;
-			while (current != null && current != node) {
-				current = current.next;
-			}
-			if (current == null) {
+			Node current = this.first;
+		Node prev = null;
+
+		while (current != null) {
+			if(current.equals(node)) {
+				if(current.next == null){ //if we want to remove the last element
+					this.last = prev;
+					this.last.next = null;
+				} else{
+					prev.next = current.next;
+				}
+				size--;
 				return;
 			}
-			current.next = node.next;
-			if (node == last) {
-				last = current;
-			}
-			size--;
+
+			prev = current;
+			current = current.next;
+		}
 		}
 	}
 
@@ -243,6 +249,7 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
+		
 		remove(getNode(index));
 	}
 
